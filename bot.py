@@ -43,10 +43,10 @@ def chat(message):
         if message.text == '⏳':
             bot.send_message(message.chat.id, "Дата: {0}\nДень недели: {1}"
                              .format(datetime.fromtimestamp(message.date + 10800).strftime('%d.%m.%Y\n%H:%M:%S'),
-                                     day_of_week[datetime.fromtimestamp(message.date + 10800).today().weekday()]))
+                                     day_of_week[datetime.fromtimestamp(message.date + 10800).weekday()]))
             # subjects table
             flag = True
-            for i in range(len(timetable[day_of_week[datetime.fromtimestamp(message.date + 10800).today().weekday()]])):
+            for i in range(len(timetable[day_of_week[datetime.fromtimestamp(message.date + 10800).weekday()]])):
                 if current_date_of_week == 5 or current_date_of_week == 6:
                     bot.send_message(message.chat.id, 'чил')
                     break
@@ -54,26 +54,26 @@ def chat(message):
                     if current_time < end[i]:
                         # lesson is going
                         bot.send_message(message.chat.id, '✅' +
-                                         timetable[day_of_week[datetime.fromtimestamp(message.date + 10800).today().
+                                         timetable[day_of_week[datetime.fromtimestamp(message.date + 10800).
                                          weekday()]][i] + ' - ' + str(gap(current_time, end[i])) + ' до конца')
                         flag = False
                     else:
                         # end of lesson
                         bot.send_message(message.chat.id, '❌' +
-                                         timetable[day_of_week[datetime.fromtimestamp(message.date + 10800).today().
+                                         timetable[day_of_week[datetime.fromtimestamp(message.date + 10800).
                                          weekday()]][i])
                         flag = True
                 else:
                     if flag:
                         bot.send_message(message.chat.id, '✓' +
                                          timetable[day_of_week[
-                                             datetime.fromtimestamp(message.date + 10800).today().weekday()]]
+                                             datetime.fromtimestamp(message.date + 10800).weekday()]]
                                          [i] + ' - ' + str(gap(current_time, start[i])) + ' до начала')
                         flag = False
                     else:
                         bot.send_message(message.chat.id, '✓' +
                                          timetable[day_of_week[
-                                             datetime.fromtimestamp(message.date + 10800).today().weekday()]]
+                                             datetime.fromtimestamp(message.date + 10800).weekday()]]
                                          [i])
         elif message.text == '❔':
             markup2 = types.InlineKeyboardMarkup(row_width=2)
