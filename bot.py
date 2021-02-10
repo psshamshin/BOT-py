@@ -7,7 +7,7 @@ bot = telebot.TeleBot(config.TOKEN)
 day_of_week = config.day_of_week
 start = config.start
 end = config.end
-timetable = config.timetable
+timetable = config.timetable1
 
 
 def gap(str1, str2):
@@ -33,6 +33,8 @@ def welcome(message):
     bot.send_message(message.chat.id, "Общий салам, {0.first_name} \nВремени с UNIX: {1} секунд"
                      .format(message.from_user, message.date + 10800),
                      parse_mode='html', reply_markup=markup)
+    bot.send_message(message.chat.id, 'Функции бота:\n✉ - расписание (фото)\n⏳ - динамическое расписание\n❔ - ВАПРОС'
+                                      '\n✒ - Spooky-dance\n✏ - список программ')
 
 
 @bot.message_handler(content_types=['text'])
@@ -60,21 +62,19 @@ def chat(message):
                     else:
                         # end of lesson
                         bot.send_message(message.chat.id, '❌' +
-                                         timetable[day_of_week[datetime.fromtimestamp(message.date + 10800).
-                                         weekday()]][i])
+                                         timetable[day_of_week[datetime.fromtimestamp(message.date + 10800).weekday()]][i])
                         flag = True
                 else:
                     if flag:
                         bot.send_message(message.chat.id, '✓' +
                                          timetable[day_of_week[
-                                             datetime.fromtimestamp(message.date + 10800).weekday()]]
-                                         [i] + ' - ' + str(gap(current_time, start[i])) + ' до начала')
+                                             datetime.fromtimestamp(message.date + 10800).weekday()]][i] + ' - ' +
+                                         str(gap(current_time, start[i])) + ' до начала')
                         flag = False
                     else:
                         bot.send_message(message.chat.id, '✓' +
                                          timetable[day_of_week[
-                                             datetime.fromtimestamp(message.date + 10800).weekday()]]
-                                         [i])
+                                             datetime.fromtimestamp(message.date + 10800).weekday()]][i])
         elif message.text == '❔':
             markup2 = types.InlineKeyboardMarkup(row_width=2)
             item1 = types.InlineKeyboardButton("Да", callback_data='good')
@@ -85,13 +85,19 @@ def chat(message):
         elif message.text == '✒':
             bot.send_animation(chat_id=message.chat.id, animation='https://i.gifer.com/O9Yw.gif')
         elif message.text == '✏':
-            bot.send_message(message.chat.id, 'Команды:\nrandom - рандомное значение кубика')
-        elif message.text == 'voice':
+            bot.send_message(message.chat.id, 'Команды:\n/random - рандомное значение кубика\n/poll - голосование\n'
+                                              '/voice - голосовое\n/send_action - поставить статус')
+        elif message.text == '/voice':
             bot.send_voice(chat_id=message.chat.id,
                            voice='https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
                            caption="ЛОЛ")
-        elif message.text == 'random':
+        elif message.text == '/random':
             bot.send_dice(chat_id=message.chat.id, emoji='🎲')
+        elif message.text == '/poll':
+            bot.send_poll(chat_id=message.chat.id, question='Лох', options=['да', 'да', 'да'])
+        elif message.text == '/send_action':
+            # bot.send_chat_action(chat_id=message.chat.id, action='typing')
+            bot.send_poll(chat_id=message.chat.id, question='Тип статуса', options=['пишет...', 'не пишет...', 'да'])
         elif message.text == '✉':
             bot.send_photo(chat_id=message.chat.id, photo='https://sun9-47.userapi.com/impg/b_EUaMN45'
                                                           '-EtPfd6WpaVGw1_kszLS5j8SQeMZg/xq6vTxs9dhk.jpg?size'
@@ -116,7 +122,7 @@ def callback_inline(call):
             elif call.data == 'bad':
                 bot.send_message(call.message.chat.id, 'Неправильный ответ')
 
-            bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="ОПА",
+            bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text='ОПА',
                                   reply_markup=None)
             # bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
             # bot.answer_callback_qeury(chat_id=call.message.chat.id, show_alert=False, text = "POH")
